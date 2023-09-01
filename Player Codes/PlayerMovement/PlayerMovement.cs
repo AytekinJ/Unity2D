@@ -1,0 +1,92 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PlayerMovement : MonoBehaviour
+{
+    #region Movement 2 Variables
+    float horizontal;
+    float vertical;
+    #endregion
+
+    #region Movement 3 Variables
+    Vector2 movement;
+    #endregion
+
+    #region Movement 4 Variables
+    float pHorizontal;
+    bool groundCheck;
+    public float groundCheckRadius = .35f;
+    float jumpPover = 10f;
+    public GameObject groundCheckPosition;
+    public LayerMask groundCheckLayer;
+    #endregion
+
+    float speed = 15f;
+    Rigidbody2D rb;
+    private void Start()
+    {
+        rb = GetComponent<Rigidbody2D>();
+    }
+    private void FixedUpdate()
+    {
+        //Movement1();
+        //Movement2();
+        //Movement3();
+        //Movement4();
+    }
+
+    private void Update()
+    {
+        CheckSurfaceForMovement4();
+        Jump();
+    }
+    void Movement1()
+    {
+        if(Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W)) 
+            transform.position += new Vector3(0, 10 * Time.deltaTime, 0);
+        if (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S))
+            transform.position -= new Vector3(0, 10 * Time.deltaTime, 0);
+        if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
+            transform.position -= new Vector3(10 * Time.deltaTime , 0, 0);
+        if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
+            transform.position += new Vector3(10 * Time.deltaTime, 0, 0);
+    }
+    void Movement2()
+    {
+        horizontal = Input.GetAxis("Horizontal");
+        vertical = Input.GetAxis("Vertical");
+        rb.velocity = new Vector2(horizontal * speed, vertical * speed);
+    }
+    void Movement3()
+    {
+        movement.x = Input.GetAxis("Horizontal");
+        movement.y = Input.GetAxis("Vertical");
+        rb.MovePosition(rb.position + movement * speed * Time.deltaTime);
+    }
+    //This codes just for Movement 4
+    void Movement4()
+    {
+        pHorizontal = Input.GetAxis("Horizontal");
+        rb.velocity = new Vector2(pHorizontal * speed , rb.velocity.y);
+    }
+    void CheckSurfaceForMovement4()
+    {
+        groundCheck = Physics2D.OverlapCircle(groundCheckPosition.transform.position, groundCheckRadius, groundCheckLayer);
+        
+    }
+    void Jump()
+    {
+        if (groundCheck == true)
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                rb.velocity = new Vector2(rb.velocity.x, jumpPover);
+            }
+        }
+    }
+    void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(groundCheckPosition.transform.position, groundCheckRadius);
+    }
+}
