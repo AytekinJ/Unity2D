@@ -20,6 +20,7 @@ public class PlayerMovement : MonoBehaviour
     float jumpPover = 10f;
     public GameObject groundCheckPosition;
     public LayerMask groundCheckLayer;
+    bool isFacingRight;
     #endregion
 
     float speed = 15f;
@@ -69,6 +70,16 @@ public class PlayerMovement : MonoBehaviour
     {
         pHorizontal = Input.GetAxis("Horizontal");
         rb.velocity = new Vector2(pHorizontal * speed , rb.velocity.y);
+    }
+    void Flip()
+    {
+        if(isFacingRight && pHorizontal < 0f || !isFacingRight && pHorizontal > 0f)
+        {
+            isFacingRight = !isFacingRight;
+            Vector3 localScale = transform.localScale;
+            localScale.x *= -1f;
+            transform.localScale = localScale;
+        }
     }
     void CheckSurfaceForMovement4()
     {
